@@ -1,5 +1,6 @@
 import os
 import time
+import schedule
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -48,14 +49,24 @@ def joinClass():
       # Find green button
       driver.find_element_by_css_selector('button.ui.green.compact.button').click()
       print('Successfully joined class')
-    except Exception as e:
-      print(e)
+    except Exception:
+      print('Class has not started yet')
+      print('Trying again in 10 seconds')
+      time.sleep(10)
+      joinClass()
   else:
     sporkLogin()
+
+classStartTimes = ['14:30', '15:25', '16:20', '17:15', '18:10', '19:05', '20:00', '21:55', '22:50'] #All converted to UTC
+classStartTimes.remove('18:10') #Lunch Period UTC
+
+#Scheduling
+for startTime in classStartTimes:
+  schedule.every().day.at(startTime).do(joinClass)
 
 #Run
 sporkLogin()
 time.sleep(1)
 while(True):
-  joinClass()
-  time.sleep(60 * 5)
+  schedule.run_pending()
+  time.sleep(1)
