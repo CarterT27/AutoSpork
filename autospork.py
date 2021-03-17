@@ -49,7 +49,7 @@ def joinClass():
       # Find green button
       driver.find_element_by_css_selector('button.ui.green.compact.button').click()
       print('Successfully joined class')
-    except Exception:
+    except:
       print('Class has not started yet')
       print('Trying again in 10 seconds')
       time.sleep(10)
